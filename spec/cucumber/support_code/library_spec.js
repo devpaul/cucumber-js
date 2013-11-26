@@ -88,34 +88,6 @@ describe("Cucumber.SupportCode.Library", function() {
       it("exposes a method to register a listener", function() {
         expect(supportCodeHelper.registerListener).toBeAFunction();
       });
-
-      it("exposes a method to register a handler", function() {
-        expect(supportCodeHelper.registerHandler).toBeAFunction();
-      });
-
-      // parameterized test
-      for(eventName in Cucumber.Listener.Events) {
-        if(!Cucumber.Listener.Events.hasOwnProperty(eventName))
-          continue;
-
-        describe(eventName + ' event register handler method', function() {
-          beforeEach(function() {
-            spyOn(library, 'registerHandler');
-          });
-
-          it("is defined as a function", function() {
-            expect(supportCodeHelper[eventName]).toBeAFunction();
-          });
-
-          it("calls registerHandler with the eventName", function() {
-            var handler = createSpy('handler');
-            supportCodeHelper[eventName](handler);
-            expect(library.registerHandler).toHaveBeenCalled();
-            expect(library.registerHandler).toHaveBeenCalledWithValueAsNthParameter(eventName, 1);
-            expect(library.registerHandler).toHaveBeenCalledWithValueAsNthParameter(handler, 2);
-          });
-        });
-      }
     });
   });
 
@@ -241,27 +213,6 @@ describe("Cucumber.SupportCode.Library", function() {
         library.registerListener(listener);
         expect(listeners.add).toHaveBeenCalledWith(listener);
       })
-    });
-
-    describe('registerHandler()', function() {
-      var eventName, handler, listener;
-
-      beforeEach(function() {
-        eventName = 'eventName';
-        handler = createSpy('sampleHandler');
-        listener = createSpyWithStubs("listener",  {setHandlerForEvent: null});
-        spyOn(Cucumber, 'Listener').andReturn(listener);
-        library.registerHandler(eventName, handler);
-      });
-
-      it('creates a listener to the listener collection', function() {
-        expect(listener.setHandlerForEvent).toHaveBeenCalledWithValueAsNthParameter(eventName, 1);
-        expect(listener.setHandlerForEvent).toHaveBeenCalledWithValueAsNthParameter(handler, 2);
-      });
-
-      it("adds the listener to the listener collection", function() {
-        expect(listeners.add).toHaveBeenCalled();
-      });
     });
   });
 

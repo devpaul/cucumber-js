@@ -178,4 +178,30 @@ describe("Cucumber.Listener", function() {
       expect(buildHandlerName).toHaveBeenCalled();
     });
   });
+
+  describe("Named Handler", function() {
+    // parameterized test
+    for(eventName in Cucumber.Listener.Events) {
+      if(!Cucumber.Listener.Events.hasOwnProperty(eventName))
+        continue;
+
+      describe(eventName + ' event register handler method', function() {
+        beforeEach(function() {
+          spyOn(listener, 'setHandlerForEvent');
+        });
+
+        it("is defined as a function", function() {
+          expect(listener[eventName]).toBeAFunction();
+        });
+
+        it("calls setHandlerForEvent with the eventName", function() {
+          var handler = createSpy('handler');
+          listener[eventName](handler);
+          expect(listener.setHandlerForEvent).toHaveBeenCalled();
+          expect(listener.setHandlerForEvent).toHaveBeenCalledWithValueAsNthParameter(eventName, 1);
+          expect(listener.setHandlerForEvent).toHaveBeenCalledWithValueAsNthParameter(handler, 2);
+        });
+      });
+    }
+  })
 });
